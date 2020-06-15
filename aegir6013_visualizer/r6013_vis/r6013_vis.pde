@@ -41,42 +41,69 @@ void setup() {
 
 
 void draw() {     
-  if(millis() - lastMillis > delay){
-    for(int i = 0; i < 10; i++){
+  if (millis() - lastMillis > delay) {
+    for (int i = 0; i < 10; i++) {
       fft1.analyze(spectrumArray[0]);
       shiftArr();
     }
-  lastMillis = millis();
+    lastMillis = millis();
   }
-  
+
   //if(millis() > 9000){
   //  sendText();
   //}
 
-  background(105);
+  background(0);
   fill(255);
   translate(width/2, height/2);
   rectMode(CENTER);
   rotateX(PI/2.5);
   stroke(0);
-  rect(0, 0, planeW, planeH);
+  //rect(0, 0, planeW, planeH);
   stroke(255, 0, 0);
   noFill();
 
-  for(int i = 0; i < spectrumArray.length; i++){
-      beginShape();
+  //ALL SPECTRUM STARTS ON LEFT
+  //for(int i = 0; i < spectrumArray.length; i++){
+  //    beginShape();
 
-    for(int j = 0; j < spectrumArray[0].length; j++){
-      stroke(255,0,0,map(i,0,spectrumArray.length,0,255));
-      strokeWeight(map(i,0,spectrumArray.length,0,4));
-      vertex(
-      map(j,0,spectrumArray[0].length,-planeW/2,planeW/2),
-      map(i,0,spectrumArray.length,-planeH/2,planeH/2),
-      spectrumArray[i][j]*1000);
-    }
-          endShape(OPEN);
+  //  for(int j = 0; j < spectrumArray[0].length; j++){
+  //    stroke(255,0,0,map(i,0,spectrumArray.length,0,255));
+  //    strokeWeight(map(i,0,spectrumArray.length,0,4));
+  //    vertex(
+  //    map(j,0,spectrumArray[0].length,-planeW/2,planeW/2),
+  //    map(i,0,spectrumArray.length,-planeH/2,planeH/2),
+  //    spectrumArray[i][j]*1000);
+  //  }
+  //        endShape(OPEN);
 
+
+  //HALF SPECTRUM STARTS IN CENTER
+  for (int i = 0; i < spectrumArray.length; i++) {
+    beginShape();
+      for (int j = 0; j < spectrumArray[0].length; j++) {
+        stroke(255, 0, 0, map(i, 0, spectrumArray.length, 0, 255));
+        strokeWeight(map(i, 0, spectrumArray.length, 0, 4));
+        vertex(
+          map(j, 0, spectrumArray[0].length, 50, planeW/2), 
+          map(i, 0, spectrumArray.length, -planeH/2, planeH/2), 
+          spectrumArray[i][j]*1000);
+      }
+    endShape(OPEN);
   }
+    for (int i = 0; i < spectrumArray.length; i++) {
+    beginShape();
+      for (int j = 0; j < spectrumArray[0].length; j++) {
+        stroke(255, 0, 0, map(i, 0, spectrumArray.length, 0, 255));
+        strokeWeight(map(i, 0, spectrumArray.length, 0, 4));
+        vertex(
+          map(j, 0, spectrumArray[0].length, -50, -planeW/2), 
+          map(i, 0, spectrumArray.length, -planeH/2, planeH/2), 
+          spectrumArray[i][j]*1000);
+      }
+    endShape(OPEN);
+  }
+
 
   //for (int i = 0; i< bands/2; i++) {
   //  float x = map(i, 0, bands/2, 0, displayWidth/2);
@@ -93,18 +120,17 @@ void draw() {
   shiftArr();
 }
 
-void shiftArr(){
-    for(int x = 0; x < spectrumArray.length-1; x++){
-      bufferArray[x+1] = spectrumArray[x]; //move every element over one spot in the buffer
-    }
-          spectrumArray = bufferArray; //set the original array to the values of the buffer array
-
+void shiftArr() {
+  for (int x = 0; x < spectrumArray.length-1; x++) {
+    bufferArray[x+1] = spectrumArray[x]; //move every element over one spot in the buffer
+  }
+  spectrumArray = bufferArray; //set the original array to the values of the buffer array
 }
 
-void sendText(){
-  for(int i = 0; i < spectrumArray[0].length; i++){
+void sendText() {
+  for (int i = 0; i < spectrumArray[0].length; i++) {
     textOut[0] = textOut[0] + spectrumArray[0][i];
   }
-    saveStrings( "output.txt", textOut);
-    exit();
+  saveStrings( "output.txt", textOut);
+  exit();
 }
