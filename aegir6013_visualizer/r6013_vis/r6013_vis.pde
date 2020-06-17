@@ -1,6 +1,7 @@
 import processing.sound.*;
 
 String[] textOut = {""};
+String[] textOut2 = {""};
 
 //separate canvases for each channel
 PGraphics v1;
@@ -41,6 +42,9 @@ void setup() {
 
 
 void draw() {     
+  
+  camera(width/2.0, mouseX, mouseY, width/2.0, height/2.0, 0, 0, 1, 0);
+  
   if (millis() - lastMillis > delay) {
     for (int i = 0; i < 10; i++) {
       fft1.analyze(spectrumArray[0]);
@@ -49,9 +53,9 @@ void draw() {
     lastMillis = millis();
   }
 
-  //if(millis() > 9000){
-  //  sendText();
-  //}
+  if(millis() > 9000){
+    sendText();
+  }
 
   background(0);
   fill(255);
@@ -91,6 +95,8 @@ void draw() {
       }
     endShape(OPEN);
   }
+  
+  //OTHER HALF
     for (int i = 0; i < spectrumArray.length; i++) {
     beginShape();
       for (int j = 0; j < spectrumArray[0].length; j++) {
@@ -103,20 +109,6 @@ void draw() {
       }
     endShape(OPEN);
   }
-
-
-  //for (int i = 0; i< bands/2; i++) {
-  //  float x = map(i, 0, bands/2, 0, displayWidth/2);
-  //  float y = map(spectrum1[i], 0, 255, 0, displayHeight)*5000;
-
-  //  beginShape();
-  //  vertex(map(i,0,bands/2,0,displayWidth),map(spectrum1[i],0,255,0,displayHeight*5000),0);
-  //  vertex(map(i,0,bands/2,0,displayWidth),map(spectrum1[i],0,255,0,displayHeight*5000), 50);
-  //  vertex(map(i,0,bands/2,0,displayWidth),0,50);
-  //  vertex(map(i,0,bands/2,0,displayWidth),0,0);
-  //  endShape();
-
-  //}
   shiftArr();
 }
 
@@ -132,5 +124,9 @@ void sendText() {
     textOut[0] = textOut[0] + spectrumArray[0][i];
   }
   saveStrings( "output.txt", textOut);
+    for (int i = 0; i < spectrumArray[1].length; i++) {
+    textOut2[0] = textOut2[0] + spectrumArray[0][i];
+  }
+  saveStrings( "output2.txt", textOut2);
   exit();
 }
