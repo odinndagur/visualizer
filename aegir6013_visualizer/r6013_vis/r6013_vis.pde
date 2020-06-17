@@ -18,8 +18,9 @@ float[][] bufferArray = new float[spectrumCount][bands];
 int planeW = 800;
 int planeH = 1600;
 
-int delay = 50;
+int delay = 25;
 float lastMillis = 0;
+int current = 0;
 
 void setup() {
   //initialize the sound thingy and attach it
@@ -42,19 +43,12 @@ void setup() {
 
 
 void draw() {     
-  
-  camera(width/2.0, mouseX, mouseY, width/2.0, height/2.0, 0, 0, 1, 0);
-  
-  if (millis() - lastMillis > delay) {
-    for (int i = 0; i < 10; i++) {
-      fft1.analyze(spectrumArray[0]);
-      shiftArr();
-    }
-    lastMillis = millis();
-  }
+  //camera(width/2.0, mouseX, mouseY, width/2.0, height/2.0, 0, 0, 1, 0);
 
-  if(millis() > 9000){
-    sendText();
+  if (millis() - lastMillis > delay) {
+    shiftArr();
+    fft1.analyze(spectrumArray[0]);
+    lastMillis = millis();
   }
 
   background(0);
@@ -67,66 +61,49 @@ void draw() {
   stroke(255, 0, 0);
   noFill();
 
-  //ALL SPECTRUM STARTS ON LEFT
-  //for(int i = 0; i < spectrumArray.length; i++){
-  //    beginShape();
-
-  //  for(int j = 0; j < spectrumArray[0].length; j++){
-  //    stroke(255,0,0,map(i,0,spectrumArray.length,0,255));
-  //    strokeWeight(map(i,0,spectrumArray.length,0,4));
-  //    vertex(
-  //    map(j,0,spectrumArray[0].length,-planeW/2,planeW/2),
-  //    map(i,0,spectrumArray.length,-planeH/2,planeH/2),
-  //    spectrumArray[i][j]*1000);
-  //  }
-  //        endShape(OPEN);
-
-
   //HALF SPECTRUM STARTS IN CENTER
   for (int i = 0; i < spectrumArray.length; i++) {
     beginShape();
-      for (int j = 0; j < spectrumArray[0].length; j++) {
-        stroke(255, 0, 0, map(i, 0, spectrumArray.length, 0, 255));
-        strokeWeight(map(i, 0, spectrumArray.length, 0, 4));
-        vertex(
-          map(j, 0, spectrumArray[0].length, 50, planeW/2), 
-          map(i, 0, spectrumArray.length, -planeH/2, planeH/2), 
-          spectrumArray[i][j]*1000);
-      }
+    for (int j = 0; j < spectrumArray[0].length; j++) {
+      stroke(255, 0, 0, map(i, 0, spectrumArray.length, 0, 255));
+      stroke(255); //HENDA
+      strokeWeight(map(i, 0, spectrumArray.length, 4, 0));
+      vertex(
+        map(j, 0, spectrumArray[0].length, 50, planeW/2), 
+        map(i, 0, spectrumArray.length, planeH/2, -planeH/2), 
+        spectrumArray[i][j]*1000);
+    }
     endShape(OPEN);
   }
-  
+
   //OTHER HALF
-    for (int i = 0; i < spectrumArray.length; i++) {
+  for (int i = 0; i < spectrumArray.length; i++) {
     beginShape();
-      for (int j = 0; j < spectrumArray[0].length; j++) {
-        stroke(255, 0, 0, map(i, 0, spectrumArray.length, 0, 255));
-        strokeWeight(map(i, 0, spectrumArray.length, 0, 4));
-        vertex(
-          map(j, 0, spectrumArray[0].length, -50, -planeW/2), 
-          map(i, 0, spectrumArray.length, -planeH/2, planeH/2), 
-          spectrumArray[i][j]*1000);
-      }
+    for (int j = 0; j < spectrumArray[0].length; j++) {
+      stroke(255, 0, 0, map(i, 0, spectrumArray.length, 0, 255));
+      stroke(255); //HENDA
+      strokeWeight(map(i, 0, spectrumArray.length, 4, 0));
+      vertex(
+        map(j, 0, spectrumArray[0].length, -50, -planeW/2), 
+        map(i, 0, spectrumArray.length, planeH/2, -planeH/2), 
+        spectrumArray[i][j]*1000);
+    }
     endShape(OPEN);
   }
-  shiftArr();
 }
+
+/* Function to shift all elements of the array to move it on the time axis */
 
 void shiftArr() {
-  for (int x = 0; x < spectrumArray.length-1; x++) {
-    bufferArray[x+1] = spectrumArray[x]; //move every element over one spot in the buffer
+  for (int i = 0; i < spectrumArray.length-1; i++) {
+    for (int j = 0; j < spectrumArray[0].length; j++) {
+      bufferArray[i+1][j] = spectrumArray[i][j]; //move 0 in spectrum to 1 in buffer and so on
+    }
   }
-  spectrumArray = bufferArray; //set the original array to the values of the buffer array
-}
 
-void sendText() {
-  for (int i = 0; i < spectrumArray[0].length; i++) {
-    textOut[0] = textOut[0] + spectrumArray[0][i];
+  for (int i = 0; i < spectrumArray.length; i++){
+    for(int j = 0; j < spectrumArray[0].length; j++){
+      spectrumArray[i][j] = bufferArray[i][j]; //set spectrum to buffer array values
+    }
   }
-  saveStrings( "output.txt", textOut);
-    for (int i = 0; i < spectrumArray[1].length; i++) {
-    textOut2[0] = textOut2[0] + spectrumArray[0][i];
-  }
-  saveStrings( "output2.txt", textOut2);
-  exit();
 }
