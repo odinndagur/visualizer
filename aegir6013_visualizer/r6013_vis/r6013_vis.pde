@@ -61,8 +61,8 @@ void draw() {
   //rotateZ(PI/3);
   //rotateY(PI/3);
   stroke(0);
-  fill(255,0,100,100);
-  rect(0, 0, planeW, planeH);
+  //fill(255,0,100,100);
+  //rect(0, 0, planeW, planeH);
   stroke(255, 0, 0);
   noFill();
 
@@ -74,7 +74,7 @@ void draw() {
       //stroke(255); //HENDA
       strokeWeight(map(i, 0, spectrumArray.length, 4, 0));
       vertex(
-        map(j, 0, spectrumArray[0].length, planeW/2, 50), 
+        map(j, 0, spectrumArray[0].length, 50, planeW/2), 
         map(i, 0, spectrumArray.length, planeH/2, -planeH/2), 
         spectrumArray[i][j]*1000);
     }
@@ -89,7 +89,7 @@ void draw() {
       //stroke(255); //HENDA
       strokeWeight(map(i, 0, spectrumArray.length, 4, 0));
       vertex(
-        map(j, 0, spectrumArray[0].length, -planeW/2, -50), 
+        map(j, 0, spectrumArray[0].length, -50, -planeW/2), 
         map(i, 0, spectrumArray.length, planeH/2, -planeH/2), 
         spectrumArray[i][j]*1000);
     }
