@@ -45,7 +45,7 @@ void setup() {
 
 
 void draw() {     
-  camera(width/2.0, mouseX, mouseY, width/2.0, height/2.0, 0, 0, 1, 0);
+  //camera(width/2.0, mouseX, mouseY, width/2.0, height/2.0, 0, 0, 1, 0);
 
   if (millis() - lastMillis > delay) {
     shiftArr();
@@ -53,7 +53,7 @@ void draw() {
     lastMillis = millis();
   }
 
-  background(255);
+  //background(255);
   fill(255);
   translate(width/2, height/2);
   rectMode(CENTER);
@@ -61,8 +61,12 @@ void draw() {
   stroke(255, 0, 0);
   noFill();
 
+if(mouseX >= width/2){
 circularVis();
+}
+else{
 gatesPartingVis();
+}
 }
 
 /* Function to shift all elements of the array to move it on the time axis */
