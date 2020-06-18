@@ -1,15 +1,7 @@
 import processing.sound.*;
-
-String[] textOut = {""};
-String[] textOut2 = {""};
-
-int mode = 0;
-
-//separate canvases for each channel
-PGraphics v1;
-//define our ffts
+//define our fft
 FFT fft1;
-//define our audio inputs
+//define our audio input
 AudioIn in1;
 int bands = 256; //define how many bands for fft
 int spectrumCount = 20;
@@ -33,7 +25,6 @@ void setup() {
   fullScreen(P3D);
 
   //create separate canvases for each channel
-  v1 = createGraphics(displayWidth, displayHeight);
   //declare the actual ffts for the audio channels
   fft1 = new FFT(this, bands);
 
@@ -53,7 +44,7 @@ void draw() {
     lastMillis = millis();
   }
 
-  //background(255);
+  background(255);
   fill(255);
   translate(width/2, height/2);
   rectMode(CENTER);
@@ -67,20 +58,4 @@ circularVis();
 else{
 gatesPartingVis();
 }
-}
-
-/* Function to shift all elements of the array to move it on the time axis */
-
-void shiftArr() {
-  for (int i = 0; i < spectrumArray.length-1; i++) {
-    for (int j = 0; j < spectrumArray[0].length; j++) {
-      bufferArray[i+1][j] = spectrumArray[i][j]; //move 0 in spectrum to 1 in buffer and so on
-    }
-  }
-
-  for (int i = 0; i < spectrumArray.length; i++){
-    for(int j = 0; j < spectrumArray[0].length; j++){
-      spectrumArray[i][j] = bufferArray[i][j]; //set spectrum to buffer array values
-    }
-  }
 }
