@@ -1,3 +1,4 @@
+//function to shift all elements over by one
 void shiftArr() {
   for (int i = 0; i < spectrumArray.length-1; i++) {
     for (int j = 0; j < spectrumArray[0].length; j++) {
