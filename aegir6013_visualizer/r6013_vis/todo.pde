@@ -9,4 +9,7 @@ TODO
     -Shift spectrums over, 0 becomes 1, 1 becomes 2
     -Repeat
 
+
+  LITIR:
+   fill(255,0,100,100) - geggjaður bleikur litur
 */

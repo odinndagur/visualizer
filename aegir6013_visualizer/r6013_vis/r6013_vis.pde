@@ -9,8 +9,8 @@ PGraphics v1;
 FFT fft1;
 //define our audio inputs
 AudioIn in1;
-int bands = 256; //define how many bands for fft
-int spectrumCount = 20;
+int bands = 128; //define how many bands for fft
+int spectrumCount = 60;
 
 float[][] spectrumArray = new float[spectrumCount][bands];
 float[][] bufferArray = new float[spectrumCount][bands];
@@ -18,7 +18,7 @@ float[][] bufferArray = new float[spectrumCount][bands];
 int planeW = 800;
 int planeH = 1600;
 
-int delay = 25;
+int delay = 0;
 float lastMillis = 0;
 int current = 0;
 
@@ -51,13 +51,18 @@ void draw() {
     lastMillis = millis();
   }
 
-  background(0);
+  background(255);
   fill(255);
   translate(width/2, height/2);
   rectMode(CENTER);
   rotateX(PI/2.5);
+  //float z = frameCount;
+  //z = z/100;
+  //rotateZ(PI/3);
+  //rotateY(PI/3);
   stroke(0);
-  //rect(0, 0, planeW, planeH);
+  fill(255,0,100,100);
+  rect(0, 0, planeW, planeH);
   stroke(255, 0, 0);
   noFill();
 
@@ -65,11 +70,11 @@ void draw() {
   for (int i = 0; i < spectrumArray.length; i++) {
     beginShape();
     for (int j = 0; j < spectrumArray[0].length; j++) {
-      stroke(255, 0, 0, map(i, 0, spectrumArray.length, 0, 255));
-      stroke(255); //HENDA
+      stroke(0, map(i, 0, spectrumArray.length, 255, 0));
+      //stroke(255); //HENDA
       strokeWeight(map(i, 0, spectrumArray.length, 4, 0));
       vertex(
-        map(j, 0, spectrumArray[0].length, 50, planeW/2), 
+        map(j, 0, spectrumArray[0].length, planeW/2, 50), 
         map(i, 0, spectrumArray.length, planeH/2, -planeH/2), 
         spectrumArray[i][j]*1000);
     }
@@ -80,11 +85,11 @@ void draw() {
   for (int i = 0; i < spectrumArray.length; i++) {
     beginShape();
     for (int j = 0; j < spectrumArray[0].length; j++) {
-      stroke(255, 0, 0, map(i, 0, spectrumArray.length, 0, 255));
-      stroke(255); //HENDA
+      stroke(0, map(i, 0, spectrumArray.length, 255, 0));
+      //stroke(255); //HENDA
       strokeWeight(map(i, 0, spectrumArray.length, 4, 0));
       vertex(
-        map(j, 0, spectrumArray[0].length, -50, -planeW/2), 
+        map(j, 0, spectrumArray[0].length, -planeW/2, -50), 
         map(i, 0, spectrumArray.length, planeH/2, -planeH/2), 
         spectrumArray[i][j]*1000);
     }
