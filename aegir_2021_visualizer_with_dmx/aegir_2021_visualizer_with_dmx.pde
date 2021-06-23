@@ -58,7 +58,7 @@ void setup() {
 
 
 void draw() {     
-  camera(0, 0, 600, 0, 0, 0, 0, 0, 0);
+  //camera(0, 0, 600, 0, 0, 0, 0, 0, 0);
   //camera(width/2.0, mouseX, mouseY, width/2.0, height/2.0, 0, 0, 1, 0);
 
   if (millis() - lastMillis > delay) {
@@ -68,10 +68,10 @@ void draw() {
   }
 
   background(0);
-  fill(255);
+  //fill(255);
   translate(width/2, height/2);
   rectMode(CENTER);
-  rotateX(PI/2.5);
+  //rotateX(PI/2.5);
   stroke(255, 0, 0);
   noFill();
 
