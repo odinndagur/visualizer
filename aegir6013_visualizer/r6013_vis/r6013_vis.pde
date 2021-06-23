@@ -4,7 +4,7 @@ FFT fft1;
 //define our audio input
 AudioIn in1;
 int bands = 256; //define how many bands for fft
-int spectrumCount = 20;
+int spectrumCount = 30;
 
 float[][] spectrumArray = new float[spectrumCount][bands];
 float[][] bufferArray = new float[spectrumCount][bands];
@@ -36,7 +36,7 @@ void setup() {
 
 
 void draw() {     
-  //camera(width/2.0, mouseX, mouseY, width/2.0, height/2.0, 0, 0, 1, 0);
+  camera(width/2.0, mouseX, mouseY, width/2.0, height/2.0, 0, 0, 1, 0);
 
   if (millis() - lastMillis > delay) {
     shiftArr();
@@ -52,10 +52,12 @@ void draw() {
   stroke(255, 0, 0);
   noFill();
 
-if(mouseX >= width/2){
-circularVis();
-}
-else{
+//if(mouseX >= width/2){
+//circularVis();
+//}
+//else{
 gatesPartingVis();
-}
+//}
+
+println(frameRate);
 }
