@@ -31,14 +31,15 @@ float white = 0;
 
 void setup() {
   frameRate(framerate);
-    file = new SoundFile(this, "Ægir - almost by force (æ6.1.2).wav");
+  //file = new SoundFile(this, "Ægir - almost by force (æ6.1.2).wav");
+  file = new SoundFile(this, "VANO 3000 - Running Away [adult swim].wav");
   file.play();
 
   //initialize the sound thingy and attach it
-  Sound s = new Sound(this);
+  //Sound s = new Sound(this);
   //Sound.list();
   //set input device (can use Sound.list() to find which one it is, can also find by name)
-  s.inputDevice(0);
+  //s.inputDevice(0);
   //size(1920,1080);
   fullScreen();
 
@@ -46,13 +47,13 @@ void setup() {
   //declare the actual ffts for the audio channels
   fft1 = new FFT(this, bands);
 
-  in1 = new AudioIn(this, 0);  //declare the actual channel for each audio input
-  in1.play();  //start playing the audio in the sketch
+  //in1 = new AudioIn(this, 0);  //declare the actual channel for each audio input
+  //in1.play();  //start playing the audio in the sketch
   //attach the ffts to each input
-  fft1.input(in1);
-  //fft1.input(file);
-  
-    dmx=new DmxP512(this, universeSize, false);
+  //fft1.input(in1);
+  fft1.input(file);
+
+  dmx=new DmxP512(this, universeSize, false);
   dmx.setupDmxPro(DMXPRO_PORT, DMXPRO_BAUDRATE);
 }
 
@@ -75,18 +76,21 @@ void draw() {
   stroke(255, 0, 0);
   noFill();
 
-//if(mouseX >= width/2){
-//circularVis();
-circularVis2(spectrumArray);
-//}
-//else{
-//gatesPartingVis();
-//}
+  //if(mouseX >= width/2){
+  //circularVis();
+  circularVis2(spectrumArray);
+  //}
+  //else{
+  //gatesPartingVis();
+  //}
   float red = getEnergy(1, 350, true);
   float blue = getEnergy(351, 5000, true);
   float white = getEnergy(5001, 22050, true);
-updateDMX(red,blue,white,0.4);
-//println(frameRate);
+  updateDMX(red, blue, white, 0.4, 1); //heildarmynd a channel 1-4
+  updateSingleChannelDMX(red, 0.4, 5);
+
+
+  //println(frameRate);
 }
 
 float getEnergy(float frequency1, float frequency2, boolean rangeYesOrNo) {
