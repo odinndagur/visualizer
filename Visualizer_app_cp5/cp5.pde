@@ -20,6 +20,15 @@ Button addBand;
 Button removeSpec;
 Button removeBand;
 
+void checkSliders(){
+  if(specCount != v.specCount){
+    v.setSpecCount(specCount);
+  }
+  if(bandCount != v.bandCount){
+    v.setBandCount(bandCount);
+  }
+}
+
 void resetChannels() {
   for (controlP5.Toggle item : audioOutput.getItems()) {
     item.remove();
@@ -87,13 +96,23 @@ void cp5init() {
     .setGroup(bg)
     ;
 
+  Group audio = cp5.addGroup("audio")
+    .setPosition(480, 100)
+    .setWidth(500)
+    .activateEvent(true)
+    .setBackgroundColor(color(255, 80))
+    .setBackgroundHeight(400)
+    .setLabel("Audio")
+    ;
+
   Group audioin = cp5.addGroup("audioin")
-    .setPosition(470, 100)
+    .setPosition(20, 20)
     .setWidth(180)
     .activateEvent(true)
     .setBackgroundColor(color(255, 80))
     .setBackgroundHeight(180)
     .setLabel("Audio Input")
+    .setGroup(audio)
     ;
 
   audioInput = cp5.addRadioButton("audioInRadio")
@@ -103,12 +122,13 @@ void cp5init() {
     ;    
 
   Group audioout = cp5.addGroup("audioout")
-    .setPosition(660, 100)
+    .setPosition(220, 20)
     .setWidth(180)
     .activateEvent(true)
     .setBackgroundColor(color(255, 80))
     .setBackgroundHeight(180)
     .setLabel("Audio Output")
+    .setGroup(audio)
     ;
 
   audioOutput = cp5.addRadioButton("audioOutRadio")
@@ -160,18 +180,19 @@ void cp5init() {
   audioOutput.activate(currentOutputIndex);
 
   channel = cp5.addGroup("channel")
-    .setPosition(850, 100)
+    .setPosition(20, audioin.getBackgroundHeight() + 40)
     .setWidth(180)
     .activateEvent(true)
     .setBackgroundColor(color(255, 80))
     .setBackgroundHeight(180)
     .setLabel("Channel")
+    .setGroup("audio");
     ;
 
   audioOutput = cp5.addRadioButton("audioOutput")
     .setPosition(10, 10)
     .setSize(30, 30)
-    .setGroup(channel)
+    .setGroup(audio)
     ;
 
   resetChannels();
@@ -195,7 +216,7 @@ void cp5init() {
     .setWidth(140)
     .activateEvent(true)
     .setBackgroundColor(color(255, 80))
-    .setBackgroundHeight(200)
+    .setBackgroundHeight(260)
     .setLabel("Spectrum/band count")
     ;
 
@@ -207,12 +228,16 @@ void cp5init() {
     .setGroup(spectrum);
   ;
 
+
   bandSlider = cp5.addSlider("bandCount")
     .setPosition(80, 40)
     .setSize(20, 100)
     .setRange(0, bands)
     .setValue(bands)
     .setGroup(spectrum);
+    
+
+
 
   addSpec = cp5.addButton("addSpectrum")
     .setValue(0)
@@ -275,6 +300,25 @@ void cp5init() {
       // specify whatever you want to happen here
       v.removeBand();
       bandSlider.setValue(v.bandCount);
+    }
+  }
+  );
+
+  Button relativeBands = cp5.addButton("relativeBands")
+    .setValue(0)
+    .setPosition(35, 200)
+    .setSize(80, 40)
+    .setLabel("relativeBands")
+    .setGroup(spectrum);
+
+  relativeBands.onRelease(new CallbackListener() {
+    public void controlEvent(CallbackEvent theEvent) {
+      v.relativeBands = !v.relativeBands;
+      //println("v.relativeBands is: " + v.relativeBands);
+      //relativeBands.setLabel("not relativeBands");
+      //if(v.relativeBands){
+      //  relativeBands.setLabel("relativeBands");
+      //}
     }
   }
   );

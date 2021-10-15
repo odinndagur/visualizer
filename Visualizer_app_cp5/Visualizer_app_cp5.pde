@@ -57,7 +57,8 @@ void setup() {
 
 
 public void draw() {
-  background(0);
+  //background(0);
+  frameRate(60);
   //if (millis() - lastMillis > delay) {
   v.shiftArr(spectrumArray, bufferArray);
   fft1.analyze(spectrumArray[0]);
@@ -65,14 +66,8 @@ public void draw() {
   //}
   //v.display();
   ////println(frameRate);
-  
-  if(specCount != v.specCount){
-    v.specCount = specCount;
-  }
-  
-  if(bandCount != v.bandCount){
-    v.bandCount = bandCount;
-  }
+ checkSliders();
+ text(frameRate,width/2,height/2);
 }
 
 

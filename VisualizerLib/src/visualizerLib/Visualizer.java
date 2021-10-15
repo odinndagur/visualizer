@@ -42,6 +42,8 @@ public class Visualizer extends PApplet {
     public int fgColor;
     public int bgColor;
 
+    public boolean relativeBands = true;
+
     public Visualizer(PApplet parent){
         parent.registerMethod("draw",this);
         ourFFT = true;
@@ -56,7 +58,7 @@ public class Visualizer extends PApplet {
     }
 
     public Visualizer(int bands, int spectrumCount, float[][] spectrumArray, PApplet parent) {
-        parent.registerMethod("draw",this);
+        parent.registerMethod("pre",this);
         this._bands = bands;
         this.specCount = spectrumCount;
         this.bandCount = bands;
@@ -75,11 +77,10 @@ public class Visualizer extends PApplet {
         this.running = false;
     }
 
-    public void draw(){
+    public void pre(){
         if(this.running) {
             this.display();
         }
-        println("lollolololklo1j2l3123");
     }
 
     public void addSpectrum(){
@@ -106,6 +107,14 @@ public class Visualizer extends PApplet {
         }
     }
 
+    public void setSpecCount(int newSpecCount){
+        this.specCount = newSpecCount;
+    }
+
+    public void setBandCount(int newBandCount){
+        this.bandCount = newBandCount;
+    }
+
     public void display() {
 
         if(ourFFT){
@@ -117,7 +126,6 @@ public class Visualizer extends PApplet {
         p.rectMode(CENTER);
         //rotateX(PI/2.5);
         p.background(bgColor);
-        //p.stroke(this.fgR,this.fgG,this.fgB,this.fgA);
         p.stroke(fgColor);
         p.noFill();
 
@@ -142,7 +150,14 @@ public class Visualizer extends PApplet {
             p.strokeWeight(p.map(layer, 0, spectrum.length, 2, 0.5F));
             p.beginShape();
             for (int i = 0; i < bandCount; i++) {
-                float r2 = r + log(spectrum[layer][i])*15;
+                int relativePos = (int)map(i,0,bandCount,0,_bands);
+                float r2 = 0;
+                if(this.relativeBands){
+                    r2 = r + log(spectrum[layer][i])*15;
+                }
+                if(!this.relativeBands){
+                    r2 = r + log(spectrum[layer][relativePos])*15;
+                }
                 float a = map(i, 0, bandCount, angleMin, angleMin+TWO_PI);
                 float x = r2 * cos(a);
                 float y = r2 * sin(a);
