@@ -20,11 +20,17 @@ Button addBand;
 Button removeSpec;
 Button removeBand;
 
-void checkSliders(){
-  if(specCount != v.specCount){
+Tab Color;
+
+ColorPicker fgColorPicker;
+ColorPicker bgColorPicker;
+
+
+void checkSliders() {
+  if (specCount != v.specCount) {
     v.setSpecCount(specCount);
   }
-  if(bandCount != v.bandCount){
+  if (bandCount != v.bandCount) {
     v.setBandCount(bandCount);
   }
 }
@@ -40,6 +46,7 @@ void resetChannels() {
     .setGroup(channel)
     ;
   int channelCount = getInputChannels();
+  Sound.list();
   for (int i = 0; i < channelCount; i++) {
     audioOutput.addItem(Integer.toString(i), i);
   }
@@ -49,6 +56,15 @@ void resetChannels() {
 void cp5init() {
   cp5 = new ControlP5(this);
 
+  Color = cp5.addTab("Color")
+    .setColorBackground(color(0, 160, 100))
+    .setColorLabel(color(255))
+    .setColorActive(color(255, 128, 0))
+    .activateEvent(true)
+    ;
+    
+  
+  
   Group fg = cp5.addGroup("fg")
     .setPosition(250, 100)
     .setWidth(100)
@@ -56,6 +72,7 @@ void cp5init() {
     .setBackgroundColor(color(255, 80))
     .setBackgroundHeight(180)
     .setLabel("Foreground")
+    .moveTo("Color")
     ;
 
   fgColor = cp5.addRadioButton("fgRadio")
@@ -67,7 +84,14 @@ void cp5init() {
     .addItem("blue", 3)
     .addItem("grey", 4)
     .setGroup(fg)
-    ;    
+    ;
+
+  fgColorPicker = cp5.addColorPicker("fgColorPicker")
+    .setPosition(60, 400)
+    .setColorValue(v.fgColor)
+    .setWidth(10)
+    .setGroup(fg)
+    ;
 
 
   for (int i = 0; i < fgColors.length; i++) {
@@ -83,6 +107,7 @@ void cp5init() {
     .setBackgroundColor(color(255, 80))
     .setBackgroundHeight(180)
     .setLabel("Background")
+    .moveTo("Color")
     ;
 
   bgColor = cp5.addRadioButton("bgRadio")
@@ -96,6 +121,13 @@ void cp5init() {
     .setGroup(bg)
     ;
 
+  bgColorPicker = cp5.addColorPicker("bgColorPicker")
+    .setPosition(60, 500)
+    .setColorValue(v.bgColor)
+    .setWidth(10)
+    .setGroup(bg)
+    ;
+
   Group audio = cp5.addGroup("audio")
     .setPosition(480, 100)
     .setWidth(500)
@@ -103,7 +135,8 @@ void cp5init() {
     .setBackgroundColor(color(255, 80))
     .setBackgroundHeight(400)
     .setLabel("Audio")
-    ;
+    .moveTo("Audio");
+  ;
 
   Group audioin = cp5.addGroup("audioin")
     .setPosition(20, 20)
@@ -187,7 +220,7 @@ void cp5init() {
     .setBackgroundHeight(180)
     .setLabel("Channel")
     .setGroup("audio");
-    ;
+  ;
 
   audioOutput = cp5.addRadioButton("audioOutput")
     .setPosition(10, 10)
@@ -235,7 +268,7 @@ void cp5init() {
     .setRange(0, bands)
     .setValue(bands)
     .setGroup(spectrum);
-    
+
 
 
 
@@ -322,10 +355,42 @@ void cp5init() {
     }
   }
   );
+
+  Button fadeOut = cp5.addButton("fadeOut")
+    .setValue(0)
+    .setPosition(35, height-100)
+    .setSize(80, 40)
+    .setLabel("Fade Out")
+    .moveTo("global")
+    ;
+  //.setGroup(spectrum);
+
+  fadeOut.onRelease(new CallbackListener() {
+    public void controlEvent(CallbackEvent theEvent) {
+      v.fadeOut();
+    }
+  }
+  );
 }
 
 
-void controlEvent(ControlEvent theEvent) {
+void controlEvent(ControlEvent theEvent) {    
+  if (theEvent.isFrom(fgColorPicker)) {
+    int r = int(theEvent.getArrayValue(0));
+    int g = int(theEvent.getArrayValue(1));
+    int b = int(theEvent.getArrayValue(2));
+    int a = int(theEvent.getArrayValue(3));
+    color col = color(r, g, b, a);
+    v.setFgColor(col);
+  }
+  if (theEvent.isFrom(bgColorPicker)) {
+    int r = int(theEvent.getArrayValue(0));
+    int g = int(theEvent.getArrayValue(1));
+    int b = int(theEvent.getArrayValue(2));
+    int a = int(theEvent.getArrayValue(3));
+    color col = color(r, g, b);
+    v.setBgColor(col);
+  }
   if (theEvent.isFrom(fgColor)) {
     v.setFgColor(fgColors[(int)theEvent.getValue()]);
   }

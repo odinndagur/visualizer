@@ -7,6 +7,7 @@ import com.jsyn.devices.AudioDeviceManager;
 FFT fft1;
 SoundFile file;
 Visualizer v;
+Visualizer v2;
 
 String fileName = "VANO 3000 - Running Away [adult swim].wav";
 
@@ -37,8 +38,15 @@ void setup() {
   in1 = new AudioIn(this, 0);
   in1.play();
 
-  fullScreen();
+  //fullScreen();
+  size(1200,600);
   v = new Visualizer(bands, spectrumCount, spectrumArray, this);
+  v2 = new Visualizer(bands,spectrumCount,spectrumArray,this);
+  v2.interval(3);
+  v2.start();
+  v2.setFgColor(color(130,30,200));
+  v2.setSpeed(0.3);
+  v2.bandCount = 124;
   file = new SoundFile(this, fileName);
   //file.play();
 
@@ -57,8 +65,8 @@ void setup() {
 
 
 public void draw() {
+  background(0);
   //background(0);
-  frameRate(60);
   //if (millis() - lastMillis > delay) {
   v.shiftArr(spectrumArray, bufferArray);
   fft1.analyze(spectrumArray[0]);
@@ -66,8 +74,8 @@ public void draw() {
   //}
   //v.display();
   ////println(frameRate);
- checkSliders();
- text(frameRate,width/2,height/2);
+  checkSliders();
+  text(frameRate, width/2, height/2);
 }
 
 
@@ -77,11 +85,11 @@ String getInputDevice() {
   return s.engine.getSelectedInputDeviceName();
 }
 
-int getInputChannels(){
+int getInputChannels() {
   String name = getInputDevice();
   int inputs = -1;
-  for(AudioInOut in : audioDevices){
-    if(name == in.deviceName){
+  for (AudioInOut in : audioDevices) {
+    if (name == in.deviceName) {
       inputs = in.maxInputs;
     }
   }
@@ -111,5 +119,12 @@ void keyPressed() {
     if (!showMenu) {
       cp5.hide();
     }
+  }
+
+  if (key == 's') {
+    noLoop();
+  }
+  if (key == ' ') {
+    loop();
   }
 }
