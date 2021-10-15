@@ -86,10 +86,10 @@ public void setup() {
   v2.setSpeed(0.3f);
   v2.bandCount = 124;
   file = new SoundFile(this, fileName);
-  //file.play();
+  file.play();
 
   fft1 = new FFT(this, bands);
-  fft1.input(in1);
+  fft1.input(file);
 
   //for (AudioInOut d : audioDevices) {
   //  //print(d.deviceName);
@@ -177,7 +177,6 @@ public void keyPressed() {
     loop();
   }
 }
-
 public class AudioInOut {
     public int index;
     public String deviceName;
