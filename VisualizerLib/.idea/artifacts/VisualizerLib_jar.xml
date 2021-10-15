@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="VisualizerLib:jar">
+    <output-path>$USER_HOME$/Documents/Processing/libraries/visualizerLib/library</output-path>
+    <root id="archive" name="VisualizerLib.jar">
+      <element id="module-output" name="VisualizerLib" />
+      <element id="library" level="project" name="sound_modified (2)" />
+    </root>
+  </artifact>
+</component>
