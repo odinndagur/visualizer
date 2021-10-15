@@ -1,6 +1,8 @@
 import processing.sound_modified.*;
 import visualizerLib.*;
 import com.jsyn.devices.AudioDeviceManager;
+import java.util.List; 
+import java.util.ArrayList;
 
 
 
@@ -8,6 +10,9 @@ FFT fft1;
 SoundFile file;
 Visualizer v;
 Visualizer v2;
+
+List<Visualizer> vis;
+Visualizer activeVis;
 
 String fileName = "VANO 3000 - Running Away [adult swim].wav";
 
@@ -24,27 +29,37 @@ Sound s;
 AudioIn in1;
 AudioInOut[] audioDevices;
 
+PApplet p = this;
+
+
 
 
 void setup() {
+  vis = new ArrayList<Visualizer>();
+  vis.add(new Visualizer(bands, spectrumCount, spectrumArray, this));
+  vis.get(0).start();
+  vis.get(0).refreshBackground(true);
+  activeVis = vis.get(0);
   audioDevices = soundList();
+
+  println(vis);
 
   //size(960,400);
   s = new Sound(this);
-  Sound.list();
+  //Sound.list();
   ////println(s);
   ////println(s.engine.getSelectedInputDeviceName() + " is the engine thingy");
 
   in1 = new AudioIn(this, 0);
   in1.play();
 
-  //fullScreen();
-  size(1200,600);
+  fullScreen();
+  //size(1200, 600);
   v = new Visualizer(bands, spectrumCount, spectrumArray, this);
-  v2 = new Visualizer(bands,spectrumCount,spectrumArray,this);
+  v2 = new Visualizer(bands, spectrumCount, spectrumArray, this);
   v2.interval(3);
-  v2.start();
-  v2.setFgColor(color(130,30,200));
+  //v2.start();
+  v2.setFgColor(color(130, 30, 200));
   v2.setSpeed(0.3);
   v2.bandCount = 124;
   file = new SoundFile(this, fileName);
@@ -60,26 +75,37 @@ void setup() {
   //}
 
   cp5init();
-  v.start();
+  vis.get(0).start();
 }
 
 
 public void draw() {
-  background(0);
   //background(0);
   //if (millis() - lastMillis > delay) {
-  v.shiftArr(spectrumArray, bufferArray);
+  Visualizer.shiftArr(spectrumArray, bufferArray);
   fft1.analyze(spectrumArray[0]);
   //lastMillis = millis();
   //}
-  //v.display();
+  //vis.get(0).display();
   ////println(frameRate);
   checkSliders();
-  text(frameRate, width/2, height/2);
+  showFrameRate();
 }
 
-
-
+void showFrameRate(){
+    push();
+  rectMode(CENTER);
+  fill(255);
+  stroke(0);
+  strokeWeight(1);
+  rect(width/2,height/2,80,80);
+  stroke(0);
+  fill(0);
+  textSize(30);
+  textAlign(CENTER,CENTER);
+  text((int)frameRate, width/2, height/2);
+  pop();
+}
 
 String getInputDevice() {
   return s.engine.getSelectedInputDeviceName();

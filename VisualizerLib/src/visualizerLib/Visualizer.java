@@ -58,6 +58,7 @@ public class Visualizer extends PApplet {
 
     public int colorIndex = 0;
 
+    boolean refreshBackground = false;
 
     public Visualizer(PApplet parent){
         parent.registerMethod("draw",this);
@@ -73,7 +74,7 @@ public class Visualizer extends PApplet {
     }
 
     public Visualizer(int bands, int spectrumCount, float[][] spectrumArray, PApplet parent) {
-        parent.registerMethod("draw",this);
+        parent.registerMethod("pre",this);
         this._bands = bands;
         this.specCount = spectrumCount;
         this.bandCount = bands;
@@ -84,6 +85,9 @@ public class Visualizer extends PApplet {
         this.bgColor = p.color(0);
     }
 
+    public void refreshBackground(boolean bg){
+        this.refreshBackground = bg;
+    }
 
     public void start(){
         this.running = true;
@@ -94,7 +98,7 @@ public class Visualizer extends PApplet {
         println("stop");
     }
 
-    public void draw(){
+    public void pre(){
         if(this.running) {
             this.display();
         }
@@ -162,7 +166,9 @@ public class Visualizer extends PApplet {
         p.translate(p.width/2, p.height/2);
         p.rectMode(CENTER);
         //rotateX(PI/2.5);
-        //p.background(bgColor);
+        if(this.refreshBackground){
+            p.background(bgColor);
+        }
         //p.stroke(fgColor);
         p.noFill();
 

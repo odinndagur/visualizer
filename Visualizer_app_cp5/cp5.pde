@@ -6,6 +6,7 @@ RadioButton bgColor;
 RadioButton audioInput;
 RadioButton audioOutput;
 RadioButton channels;
+RadioButton selectVis;
 Group channel;
 boolean showMenu = true;
 
@@ -20,6 +21,8 @@ Button addBand;
 Button removeSpec;
 Button removeBand;
 
+Button relativeBands;
+
 Tab Color;
 
 ColorPicker fgColorPicker;
@@ -27,11 +30,11 @@ ColorPicker bgColorPicker;
 
 
 void checkSliders() {
-  if (specCount != v.specCount) {
-    v.setSpecCount(specCount);
+  if (specCount != activeVis.specCount) {
+    activeVis.setSpecCount(specCount);
   }
-  if (bandCount != v.bandCount) {
-    v.setBandCount(bandCount);
+  if (bandCount != activeVis.bandCount) {
+    activeVis.setBandCount(bandCount);
   }
 }
 
@@ -46,7 +49,7 @@ void resetChannels() {
     .setGroup(channel)
     ;
   int channelCount = getInputChannels();
-  Sound.list();
+  //Sound.list();
   for (int i = 0; i < channelCount; i++) {
     audioOutput.addItem(Integer.toString(i), i);
   }
@@ -62,9 +65,9 @@ void cp5init() {
     .setColorActive(color(255, 128, 0))
     .activateEvent(true)
     ;
-    
-  
-  
+
+
+
   Group fg = cp5.addGroup("fg")
     .setPosition(250, 100)
     .setWidth(100)
@@ -88,14 +91,14 @@ void cp5init() {
 
   fgColorPicker = cp5.addColorPicker("fgColorPicker")
     .setPosition(60, 400)
-    .setColorValue(v.fgColor)
+    .setColorValue(activeVis.fgColor)
     .setWidth(10)
     .setGroup(fg)
     ;
 
 
   for (int i = 0; i < fgColors.length; i++) {
-    if (v.fgColor == fgColors[0]) {
+    if (activeVis.fgColor == fgColors[i]) {
       fgColor.activate(i);
     }
   }
@@ -123,7 +126,7 @@ void cp5init() {
 
   bgColorPicker = cp5.addColorPicker("bgColorPicker")
     .setPosition(60, 500)
-    .setColorValue(v.bgColor)
+    .setColorValue(activeVis.bgColor)
     .setWidth(10)
     .setGroup(bg)
     ;
@@ -282,8 +285,8 @@ void cp5init() {
   addSpec.onRelease(new CallbackListener() { // add the Callback Listener to the button 
     public void controlEvent(CallbackEvent theEvent) {
       // specify whatever you want to happen here
-      v.addSpectrum();
-      specSlider.setValue(v.specCount);
+      activeVis.addSpectrum();
+      specSlider.setValue(activeVis.specCount);
     }
   }
   );
@@ -298,8 +301,8 @@ void cp5init() {
   removeSpec.onRelease(new CallbackListener() { // add the Callback Listener to the button 
     public void controlEvent(CallbackEvent theEvent) {
       // specify whatever you want to happen here
-      v.removeSpectrum();
-      specSlider.setValue(v.specCount);
+      activeVis.removeSpectrum();
+      specSlider.setValue(activeVis.specCount);
     }
   }
   );
@@ -315,8 +318,8 @@ void cp5init() {
   addBand.onRelease(new CallbackListener() { // add the Callback Listener to the button 
     public void controlEvent(CallbackEvent theEvent) {
       // specify whatever you want to happen here
-      v.addBand();
-      bandSlider.setValue(v.bandCount);
+      activeVis.addBand();
+      bandSlider.setValue(activeVis.bandCount);
     }
   }
   );
@@ -331,13 +334,13 @@ void cp5init() {
   removeBand.onRelease(new CallbackListener() { // add the Callback Listener to the button 
     public void controlEvent(CallbackEvent theEvent) {
       // specify whatever you want to happen here
-      v.removeBand();
-      bandSlider.setValue(v.bandCount);
+      activeVis.removeBand();
+      bandSlider.setValue(activeVis.bandCount);
     }
   }
   );
 
-  Button relativeBands = cp5.addButton("relativeBands")
+  relativeBands = cp5.addButton("relativeBands")
     .setValue(0)
     .setPosition(35, 200)
     .setSize(80, 40)
@@ -346,10 +349,10 @@ void cp5init() {
 
   relativeBands.onRelease(new CallbackListener() {
     public void controlEvent(CallbackEvent theEvent) {
-      v.relativeBands = !v.relativeBands;
-      //println("v.relativeBands is: " + v.relativeBands);
+      activeVis.relativeBands = !activeVis.relativeBands;
+      //println("activeVis.relativeBands is: " + activeVis.relativeBands);
       //relativeBands.setLabel("not relativeBands");
-      //if(v.relativeBands){
+      //if(activeVis.relativeBands){
       //  relativeBands.setLabel("relativeBands");
       //}
     }
@@ -367,21 +370,62 @@ void cp5init() {
 
   fadeOut.onRelease(new CallbackListener() {
     public void controlEvent(CallbackEvent theEvent) {
-      v.fadeOut();
+      activeVis.fadeOut();
     }
   }
   );
+
+  Button addVis = cp5.addButton("addVis")
+    .setValue(0)
+    .setPosition(width/2, height-100)
+    .setSize(80, 40)
+    .setLabel("add Visualizer")
+    .moveTo("global")
+    ;
+  //.setGroup(spectrum);
+
+  addVis.onRelease(new CallbackListener() {
+    public void controlEvent(CallbackEvent theEvent) {
+      vis.add(
+        new Visualizer(bands, spectrumCount, spectrumArray, p)
+        );
+      vis.get(vis.size()-1).start();
+      vis.get(vis.size()-1).setFgColor(color(random(255), random(255), random(255)));
+      vis.get(vis.size()-1).setBandCount(3);
+      vis.get(vis.size()-1).setSpecCount(3);
+    }
+  }
+  );
+
+  selectVis = cp5.addRadioButton("selectVis")
+    .setPosition(10, 40)
+    .setSize(30, 30)
+    .addItem("0 ", 0)
+    .addItem("1 ", 1)
+    .addItem("2 ", 2)
+    .addItem("3 ", 3)
+    .addItem("4 ", 4)
+    .moveTo("global")
+    ;
 }
 
 
-void controlEvent(ControlEvent theEvent) {    
+void controlEvent(ControlEvent theEvent) {
+  if (theEvent.isFrom(selectVis)) {
+    activeVis = vis.get((int)theEvent.getValue());
+    relativeBands.setValue(activeVis.relativeBands ? 1 : 0);
+    fgColorPicker.setColorValue(activeVis.fgColor);
+    bgColorPicker.setColorValue(activeVis.bgColor);
+    specCount = activeVis.specCount;
+    bandCount = activeVis.bandCount;
+  }
   if (theEvent.isFrom(fgColorPicker)) {
     int r = int(theEvent.getArrayValue(0));
     int g = int(theEvent.getArrayValue(1));
     int b = int(theEvent.getArrayValue(2));
     int a = int(theEvent.getArrayValue(3));
     color col = color(r, g, b, a);
-    v.setFgColor(col);
+    activeVis.setFgColor(col);
   }
   if (theEvent.isFrom(bgColorPicker)) {
     int r = int(theEvent.getArrayValue(0));
@@ -389,14 +433,14 @@ void controlEvent(ControlEvent theEvent) {
     int b = int(theEvent.getArrayValue(2));
     int a = int(theEvent.getArrayValue(3));
     color col = color(r, g, b);
-    v.setBgColor(col);
+    activeVis.setBgColor(col);
   }
   if (theEvent.isFrom(fgColor)) {
-    v.setFgColor(fgColors[(int)theEvent.getValue()]);
+    activeVis.setFgColor(fgColors[(int)theEvent.getValue()]);
   }
 
   if (theEvent.isFrom(bgColor)) {
-    v.setBgColor(bgColors[(int)theEvent.getValue()]);
+    activeVis.setBgColor(bgColors[(int)theEvent.getValue()]);
   }
 
   if (theEvent.isFrom(audioInput)) {
